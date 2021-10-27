@@ -10,10 +10,7 @@ import random
 
 # Checks if a number is prime
 def isPrime(n):
-    for i in range(2,int(n**0.5)+1):
-        if n%i==0:
-            return False
-    return True
+    return all(n%i != 0 for i in range(2, int(n**0.5)+1))
 
 
 # Returns the greatest common denominator of two numbers
@@ -26,10 +23,7 @@ def gcd(num1, num2):
 
 # Returns the lowest common multiple of two numbers
 def lcm(num1, num2):
-    if num1 > num2:
-        g = num1
-    else:
-        g = num2
+    g = max(num1, num2)
     while(True):
         if((g % num1 == 0) and (g % num2 == 0)):
             lcm = g
@@ -63,7 +57,7 @@ class RSA:
     def inputFunc(self):
         num_msg = input("Enter the number of messages: ")
         print("Enter the messages:")
-        for i in range(int(num_msg)):
+        for _ in range(int(num_msg)):
             self.msgList.append(input())
 
 

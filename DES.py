@@ -96,55 +96,37 @@ def left_shift(key):
 
 # Returns a string representing a binary number created from an integer
 def int_to_binary(num, bits):
-    s = str(bin(num))[2:].rjust(bits, '0')
-    return s
+    return str(bin(num))[2:].rjust(bits, '0')
 
 
 # Returns a string of characters formed from corresponding 8-bit blocks
 def binary_to_txt(string_):
-    s = ""
-    for block in split_to_char(string_):
-        s += chr(int(block, 2))
-    return s
+    return "".join(chr(int(block, 2)) for block in split_to_char(string_))
 
 
 # Splits a binary string into 8-bit blocks
 def split_to_char(msg):
-    split_txt = []
-    for i in range(0, len(msg), 8):
-        block = msg[i:i+8]
-        split_txt.append(block)
-    return split_txt
+    return [msg[i:i+8] for i in range(0, len(msg), 8)]
 
 
 # Splits the message into 64-bit blocks
 def split(msg):
-    split_txt = []
     binary_text = ''.join(format(ord(i), '08b') for i in msg)
     while len(binary_text) % 64 != 0:
         binary_text += "0"
-    for i in range(0, len(binary_text), 64):
-        block = binary_text[i:i+64]
-        split_txt.append(block)
-    return split_txt
+    return [binary_text[i:i+64] for i in range(0, len(binary_text), 64)]
 
 
 # Encrypts the message by applying DES
 def encrypt(msg, key):
-    cyphertext = ""
-    for block in split(msg):
-        num = int(block, 2)
-        cyphertext += DES(num, key)
+    cyphertext = "".join(DES(int(block, 2), key) for block in split(msg))
     cyphertext = binary_to_txt(cyphertext)
     return str(cyphertext)
 
 
 # Decrypts the ciphertext by applying DES
 def decrypt(ciphertext, key):
-    plaintext = ""
-    for block in split(ciphertext):
-        num = int(block, 2)
-        plaintext += DES(num, key)
+    plaintext = "".join(DES(int(block, 2), key) for block in split(ciphertext))
     plaintext = binary_to_txt(plaintext)
     return str(plaintext)
 
@@ -163,7 +145,7 @@ def DES(num, key):
     key_ = permutate(PC2, int_to_binary(key, 56), 48)
 
     # 16 ROUNDS
-    for i in range(0, 16, 1):
+    for i in range(16):
         # Expansion permutation on right half of message to 48 bits
         e = permutate(E, right_msg, 48)
         # Applies xor on the new key and expanded right half
@@ -185,9 +167,7 @@ def DES(num, key):
         left_msg = right_msg
         right_msg = temp_msg
     # One last switch of the two halves and a Final Permutation
-    temp = left_msg
-    left_msg = right_msg
-    right_msg = temp
+    left_msg, right_msg = right_msg, left_msg
     return permutate(IPF, left_msg+right_msg, 64)
 
 
