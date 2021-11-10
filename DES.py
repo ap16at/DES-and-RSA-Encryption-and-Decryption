@@ -119,16 +119,12 @@ def split(msg):
 
 # Encrypts the message by applying DES
 def encrypt(msg, key):
-    cyphertext = "".join(DES(int(block, 2), key) for block in split(msg))
-    cyphertext = binary_to_txt(cyphertext)
-    return str(cyphertext)
+    return str(binary_to_txt("".join(DES(int(block, 2), key) for block in split(msg))))
 
 
 # Decrypts the ciphertext by applying DES
 def decrypt(ciphertext, key):
-    plaintext = "".join(DES(int(block, 2), key) for block in split(ciphertext))
-    plaintext = binary_to_txt(plaintext)
-    return str(plaintext)
+    return str(binary_to_txt("".join(DES(int(block, 2), key) for block in split(ciphertext))))
 
 # DES
 def DES(num, key):
